@@ -1,0 +1,7 @@
+{
+    "access_token": "YourAccessToken",
+    "token_type": "bearer",
+    "expires_in": "1654040254",
+    "scope": "identity",
+    "refresh_token": "YourRefreshToken"
+}

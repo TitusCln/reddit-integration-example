@@ -4,6 +4,8 @@ const {
   afters = [],
 } = require('./authentication');
 
+const getBest = require("./triggers/best");
+
 module.exports = {
   // This is just shorthand to reference the installed dependencies you have.
   // Zapier will need to know these before we can upload.
@@ -17,7 +19,9 @@ module.exports = {
   afterResponse: [...afters],
 
   // If you want your trigger to show up, you better include it here!
-  triggers: {},
+  triggers: {
+    [getBest.key]: getBest
+  },
 
   // If you want your searches to show up, you better include it here!
   searches: {},

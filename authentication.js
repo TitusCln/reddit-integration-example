@@ -1,19 +1,22 @@
 'use strict';
 
 const getAccessToken = async (z, bundle) => {
+  const concatedatedString = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`;
+  z.console.log('concatenated', concatedatedString);
+  const header = `Basic ${Buffer.from(concatedatedString).toString('base64')}`;
+  z.console.log('header ', header);
   const response = await z.request({
-    url: 'https://auth-json-server.zapier-staging.com/oauth/access-token',
+    url: 'https://www.reddit.com/api/v1/access_token',
     method: 'POST',
     body: {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
       grant_type: 'authorization_code',
       code: bundle.inputData.code,
-
-      // Extra data can be pulled from the querystring. For instance:
-      // 'accountDomain': bundle.cleanedRequest.querystring.accountDomain
+      redirect_uri: bundle.inputData.redirect_uri,
     },
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${header}`,
+    },
   });
 
   // If you're using core v9.x or older, you should call response.throwForStatus()
@@ -29,16 +32,21 @@ const getAccessToken = async (z, bundle) => {
 };
 
 const refreshAccessToken = async (z, bundle) => {
+  const concatedatedString = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`;
+  z.console.log('concatenated', concatedatedString);
+  const header = `Basic ${Buffer.from(concatedatedString).toString('base64')}`;
+  z.console.log('header ', header);
   const response = await z.request({
-    url: 'https://auth-json-server.zapier-staging.com/oauth/refresh-token',
+    url: 'https://www.reddit.com/api/v1/access_token',
     method: 'POST',
     body: {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
       grant_type: 'refresh_token',
       refresh_token: bundle.authData.refresh_token,
     },
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${header}`,
+    },
   });
 
   // If you're using core v9.x or older, you should call response.throwForStatus()
@@ -70,7 +78,7 @@ const includeBearerToken = (request, z, bundle) => {
 // response data for testing purposes. Your connection label can access any data
 // from the returned response using the `json.` prefix. eg: `{{json.username}}`.
 const test = (z, bundle) =>
-  z.request({ url: 'https://auth-json-server.zapier-staging.com/me' });
+  z.request({ url: 'https://oauth.reddit.com/api/v1/me' });
 
 module.exports = {
   config: {
@@ -79,12 +87,14 @@ module.exports = {
     type: 'oauth2',
     oauth2Config: {
       authorizeUrl: {
-        url: 'https://auth-json-server.zapier-staging.com/oauth/authorize',
+        url: 'https://www.reddit.com/api/v1/authorize',
         params: {
           client_id: '{{process.env.CLIENT_ID}}',
           state: '{{bundle.inputData.state}}',
           redirect_uri: '{{bundle.inputData.redirect_uri}}',
           response_type: 'code',
+          scope: 'identity',
+          duration: 'permanent',
         },
       },
       getAccessToken,

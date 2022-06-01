@@ -7,10 +7,12 @@
     "test": "jest --testTimeout 10000"
   },
   "dependencies": {
+    "express": "^4.18.1",
     "zapier-platform-core": "12.0.3"
   },
   "devDependencies": {
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "nock": "^13.2.4"
   },
   "private": true
 }
