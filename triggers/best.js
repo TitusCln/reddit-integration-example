@@ -1,11 +1,8 @@
 // triggers on a new best with a certain tag
 const perform = async (z, bundle) => {
   const response = await z.request({
-    url: 'https://oauth.reddit.com/r/python/hot',
-    params: {
-      tag: bundle.inputData.tagName
-    }
-  });
+    url: `https://oauth.reddit.com/r/${bundle.inputData.theme}/hot`});
+    
   // this should return an array of objects
   return response.data;
 };
@@ -17,8 +14,8 @@ module.exports = {
   noun: 'Best',
 
   display: {
-    label: 'New Best',
-    description: 'Triggers when a new best is created.'
+    label: 'New Hot subreddits',
+    description: 'Triggers when a new hot subreddits are found.'
   },
 
   operation: {
@@ -26,7 +23,7 @@ module.exports = {
 
     // `inputFields` defines the fields a user could provide
     // Zapier will pass them in as `bundle.inputData` later. They're optional.
-    inputFields: [],
+    inputFields: [{ key: 'theme', type: 'string', required: true }],
 
     // In cases where Zapier needs to show an example record to the user, but we are unable to get a live example
     // from the API, Zapier will fallback to this hard-coded sample. It should reflect the data structure of
