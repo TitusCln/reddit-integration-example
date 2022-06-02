@@ -23,9 +23,12 @@ const perform = async (z, bundle) => {
       parent: `${fullNamePrefix}_${parentId}`,
       text: bundle.inputData.comment,
     },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   });
 
-  return response.data;
+  return { sucess: response.data.success };
 };
 
 const re_weburl = new RegExp(
