@@ -13,13 +13,13 @@ module.exports = {
   noun: 'Hot',
 
   display: {
-    label: 'New Hot comments on a subreddit',
-    description: 'Triggers when a new hot comments on a subreddit are found.'
+    label: 'New Hot posts on a subreddit',
+    description: 'Triggers when a new hot posts on a subreddit are found.'
   },
 
   operation: {
     perform,
-    inputFields: [{ key: 'subreddit', type: 'string', label: 'The subreddit to look for the comments (do not include \'/r\'', required: true }],
+    inputFields: [{ key: 'subreddit', type: 'string', label: 'The subreddit to look for the posts (do not include \'/r\'', required: true }],
     sample,
     outputFields: []
   }
