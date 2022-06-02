@@ -5,6 +5,10 @@ const {
 
 const getHot = require('./triggers/hot');
 
+const createVote = require("./creates/vote");
+
+const createComment = require("./creates/comment");
+
 module.exports = {
   version: require('./package.json').version,
   platformVersion: require('zapier-platform-core').version,
@@ -19,6 +23,9 @@ module.exports = {
     [getHot.key]: getHot,
   },
   searches: {},
-  creates: {},
+  creates: {
+    [createVote.key]: createVote,
+    [createComment.key]: createComment
+  },
   resources: {},
 };
