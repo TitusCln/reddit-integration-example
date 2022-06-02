@@ -1,4 +1,5 @@
 'use strict';
+const config = require('config');
 
 const getAccessToken = async (z, bundle) => {
   const response = await z.request({
@@ -12,9 +13,7 @@ const getAccessToken = async (z, bundle) => {
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${Buffer.from(
-        process.env.CLIENT_ID +
-          ':' +
-          process.env.CLIENT_SECRET
+        config.get('Auth.CLIENT_ID') + ':' + config.get('Auth.CLIENT_SECRET')
       ).toString('base64')}`,
     },
   });
@@ -36,9 +35,7 @@ const refreshAccessToken = async (z, bundle) => {
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${Buffer.from(
-        process.env.CLIENT_ID +
-          ':' +
-          process.env.CLIENT_SECRET
+        config.get('Auth.CLIENT_ID') + ':' + config.get('Auth.CLIENT_SECRET')
       ).toString('base64')}`,
     },
   });
@@ -71,7 +68,7 @@ const authentication = {
     authorizeUrl: {
       url: 'https://www.reddit.com/api/v1/authorize',
       params: {
-        client_id: process.env.CLIENT_ID,
+        client_id: config.get('Auth.CLIENT_ID'),
         state: '{{bundle.inputData.state}}',
         redirect_uri: '{{bundle.inputData.redirect_uri}}',
         response_type: 'code',

@@ -1,4 +1,7 @@
 {
   "id": 162453,
-  "key": "App162453"
+  "key": "App162453",
+  "includeInBuild": [
+    "config/*"
+  ]
 }
