@@ -1,5 +1,4 @@
 'use strict';
-const config = require('config');
 
 const getAccessToken = async (z, bundle) => {
   const response = await z.request({
@@ -12,7 +11,11 @@ const getAccessToken = async (z, bundle) => {
     },
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      Authorization: config.get('Auth.BASIC_AUTH'),
+      Authorization: `Basic ${Buffer.from(
+        process.env.CLIENT_ID +
+          ':' +
+          process.env.CLIENT_SECRET
+      ).toString('base64')}`,
     },
   });
 
@@ -32,7 +35,11 @@ const refreshAccessToken = async (z, bundle) => {
     },
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      Authorization: config.get('Auth.BASIC_AUTH'),
+      Authorization: `Basic ${Buffer.from(
+        process.env.CLIENT_ID +
+          ':' +
+          process.env.CLIENT_SECRET
+      ).toString('base64')}`,
     },
   });
 
@@ -58,29 +65,30 @@ const testAuth = async (z, bundle) => {
   return meResponse.display_name;
 };
 
-module.exports = {
-  config: {
-    type: 'oauth2',
-    oauth2Config: {
-      authorizeUrl: {
-        url: 'https://www.reddit.com/api/v1/authorize',
-        params: {
-          client_id: config.get('Auth.CLIENT_ID'),
-          state: '{{bundle.inputData.state}}',
-          redirect_uri: '{{bundle.inputData.redirect_uri}}',
-          response_type: 'code',
-          scope: 'identity submit save read',
-          duration: 'permanent',
-        },
+const authentication = {
+  type: 'oauth2',
+  oauth2Config: {
+    authorizeUrl: {
+      url: 'https://www.reddit.com/api/v1/authorize',
+      params: {
+        client_id: process.env.CLIENT_ID,
+        state: '{{bundle.inputData.state}}',
+        redirect_uri: '{{bundle.inputData.redirect_uri}}',
+        response_type: 'code',
+        scope: 'identity submit save read vote',
+        duration: 'permanent',
       },
-      getAccessToken,
-      refreshAccessToken,
-      autoRefresh: true,
     },
-    fields: [],
-    test: testAuth,
-    connectionLabel: testAuth,
+    getAccessToken,
+    refreshAccessToken,
+    autoRefresh: true,
   },
-  befores: [includeBearerToken],
-  afters: [],
+  fields: [],
+  test: testAuth,
+  connectionLabel: testAuth,
+};
+
+module.exports = {
+  authentication,
+  includeBearerToken,
 };

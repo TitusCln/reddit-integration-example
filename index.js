@@ -1,7 +1,6 @@
 const {
-  config: authentication,
-  befores = [],
-  afters = [],
+  authentication,
+  includeBearerToken
 } = require('./authentication');
 
 const getHot = require('./triggers/hot');
@@ -12,9 +11,9 @@ module.exports = {
 
   authentication,
 
-  beforeRequest: [...befores],
+  beforeRequest: [includeBearerToken],
 
-  afterResponse: [...afters],
+  afterResponse: [],
 
   triggers: {
     [getHot.key]: getHot,

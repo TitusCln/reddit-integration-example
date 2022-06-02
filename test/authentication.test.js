@@ -1,6 +1,5 @@
 const zapier = require('zapier-platform-core');
 const nock = require('nock');
-const config = require('config');
 
 zapier.tools.env.inject();
 
@@ -34,7 +33,7 @@ describe('oauth2 app', () => {
       },
     };
 
-    if (!(config.get('Auth.CLIENT_ID') && config.get('Auth.CLIENT_SECRET'))) {
+    if (!(process.env.CLIENT_ID && process.env.CLIENT_SECRET)) {
       throw new Error(
         `Before running the tests, make sure CLIENT_ID and CLIENT_SECRET are available in the environment.`
       );
@@ -55,9 +54,7 @@ describe('oauth2 app', () => {
     );
 
     expect(authorizeUrl).toBe(
-      `https://www.reddit.com/api/v1/authorize?client_id=${config.get(
-        'Auth.CLIENT_ID'
-      )}&state=4444&redirect_uri=https%3A%2F%2Fzapier.com%2F&response_type=code&scope=identity%20submit%20save%20read&duration=permanent`
+      `https://www.reddit.com/api/v1/authorize?client_id=${process.env.CLIENT_ID}&state=4444&redirect_uri=https%3A%2F%2Fzapier.com%2F&response_type=code&scope=identity%20submit%20save%20read%20vote&duration=permanent`
     );
   });
 
