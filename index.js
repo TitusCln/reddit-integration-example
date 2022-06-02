@@ -1,29 +1,31 @@
 const {
-  config: authentication,
-  befores = [],
-  afters = [],
+  authentication,
+  includeBearerToken
 } = require('./authentication');
 
+const getHot = require('./triggers/hot');
+
+const createVote = require("./creates/vote");
+
+const createComment = require("./creates/comment");
+
 module.exports = {
-  // This is just shorthand to reference the installed dependencies you have.
-  // Zapier will need to know these before we can upload.
   version: require('./package.json').version,
   platformVersion: require('zapier-platform-core').version,
 
   authentication,
 
-  beforeRequest: [...befores],
+  beforeRequest: [includeBearerToken],
 
-  afterResponse: [...afters],
+  afterResponse: [],
 
-  // If you want your trigger to show up, you better include it here!
-  triggers: {},
-
-  // If you want your searches to show up, you better include it here!
+  triggers: {
+    [getHot.key]: getHot,
+  },
   searches: {},
-
-  // If you want your creates to show up, you better include it here!
-  creates: {},
-
+  creates: {
+    [createVote.key]: createVote,
+    [createComment.key]: createComment
+  },
   resources: {},
 };

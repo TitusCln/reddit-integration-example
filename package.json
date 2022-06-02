@@ -1,16 +1,19 @@
 {
   "name": "reddit-integration-example",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest --testTimeout 10000"
   },
   "dependencies": {
+    "config": "^3.3.7",
+    "express": "^4.18.1",
     "zapier-platform-core": "12.0.3"
   },
   "devDependencies": {
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "nock": "^13.2.4"
   },
   "private": true
 }
