@@ -1,9 +1,8 @@
-/* globals describe, it, expect, beforeAll */
-
 const zapier = require('zapier-platform-core');
-const nock = require('nock')
+const nock = require('nock');
+const config = require('config');
 
-zapier.tools.env.inject(); // read from the .env file
+zapier.tools.env.inject();
 
 const App = require('../index');
 const appTester = zapier.createAppTester(App);
@@ -34,19 +33,19 @@ describe('oauth2 app', () => {
         CLIENT_SECRET: process.env.CLIENT_SECRET,
       },
     };
-    // It's a good idea to store your Client ID and Secret in the environment rather than in code.
-    if (!(process.env.CLIENT_ID && process.env.CLIENT_SECRET)) {
+
+    if (!(config.get('Auth.CLIENT_ID') && config.get('Auth.CLIENT_SECRET'))) {
       throw new Error(
         `Before running the tests, make sure CLIENT_ID and CLIENT_SECRET are available in the environment.`
       );
     }
 
     nock('https://www.reddit.com')
-    .post('/api/v1/access_token')
-    .reply(200, tokenResponse);
+      .post('/api/v1/access_token')
+      .reply(200, tokenResponse);
   });
 
-  expect()
+  expect();
   it('is of type oauth2', () => expect(App.authentication.type).toBe('oauth2'));
 
   it('generates an authorize URL', async () => {
@@ -56,15 +55,18 @@ describe('oauth2 app', () => {
     );
 
     expect(authorizeUrl).toBe(
-      `https://www.reddit.com/api/v1/authorize?client_id=${process.env.CLIENT_ID}&state=4444&redirect_uri=https%3A%2F%2Fzapier.com%2F&response_type=code&scope=identity&duration=permanent`
+      `https://www.reddit.com/api/v1/authorize?client_id=${config.get(
+        'Auth.CLIENT_ID'
+      )}&state=4444&redirect_uri=https%3A%2F%2Fzapier.com%2F&response_type=code&scope=identity%20submit%20save%20read&duration=permanent`
     );
   });
 
   it('returns access/refresh tokens and a user_id', async () => {
-    result = await appTester(App.authentication.oauth2Config.getAccessToken, bundle);
+    result = await appTester(
+      App.authentication.oauth2Config.getAccessToken,
+      bundle
+    );
 
     expect(result.access_token).toBe(tokenResponse.access_token);
-
-});
-
+  });
 });

@@ -1,9 +1,7 @@
 'use strict';
+const config = require('config');
 
 const getAccessToken = async (z, bundle) => {
-  const concatedatedString = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`;
-  const header = `Basic ${Buffer.from(concatedatedString).toString('base64')}`;
-
   const response = await z.request({
     url: 'https://www.reddit.com/api/v1/access_token',
     method: 'POST',
@@ -14,7 +12,7 @@ const getAccessToken = async (z, bundle) => {
     },
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      Authorization: header,
+      Authorization: config.get('Auth.BASIC_AUTH'),
     },
   });
 
@@ -25,8 +23,6 @@ const getAccessToken = async (z, bundle) => {
 };
 
 const refreshAccessToken = async (z, bundle) => {
-  const concatedatedString = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`;
-  const header = `Basic ${Buffer.from(concatedatedString).toString('base64')}`;
   const response = await z.request({
     url: 'https://www.reddit.com/api/v1/access_token',
     method: 'POST',
@@ -36,7 +32,7 @@ const refreshAccessToken = async (z, bundle) => {
     },
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      Authorization: header,
+      Authorization: config.get('Auth.BASIC_AUTH'),
     },
   });
 
@@ -46,22 +42,21 @@ const refreshAccessToken = async (z, bundle) => {
   };
 };
 
-
 const includeBearerToken = (request, z, bundle) => {
   if (bundle.authData.access_token) {
     request.headers.Authorization = `Bearer ${bundle.authData.access_token}`;
   }
-
   return request;
 };
 
-const testAuth = async(z, bundle) => {
-  const meResponse = await z.request({ url: 'https://oauth.reddit.com/api/v1/me' });
+const testAuth = async (z, bundle) => {
+  const meResponse = await z.request({
+    url: 'https://oauth.reddit.com/api/v1/me',
+  });
   meResponse.throwForStatus();
 
   return meResponse.display_name;
 };
-  
 
 module.exports = {
   config: {
@@ -70,7 +65,7 @@ module.exports = {
       authorizeUrl: {
         url: 'https://www.reddit.com/api/v1/authorize',
         params: {
-          client_id: '{{process.env.CLIENT_ID}}',
+          client_id: config.get('Auth.CLIENT_ID'),
           state: '{{bundle.inputData.state}}',
           redirect_uri: '{{bundle.inputData.redirect_uri}}',
           response_type: 'code',
